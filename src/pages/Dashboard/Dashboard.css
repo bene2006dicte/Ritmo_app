@@ -1,0 +1,79 @@
+/* Wrapper pour Sidebar + contenu */
+.dashboard-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Contenu à droite du sidebar */
+.dashboard-content {
+  flex: 1;
+  padding: 2rem;
+  background-color: #f0f4ff; /* bleu clair */
+}
+
+/* Sous-titre */
+.subtitle {
+  color: #6b7280;
+  margin-bottom: 2rem;
+}
+
+/* Cards statistiques 2x2 */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, auto);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.stat-icon {
+  font-size: 2rem;
+  margin-right: 1rem;
+}
+
+.stat-info h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.stat-info p {
+  margin: 0;
+  color: #4caf50;
+}
+
+/* Section basse : Chart et Objectifs du jour */
+.dashboard-bottom {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
+
+/* Carte graphique */
+.chart-card {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* Objectifs du jour */
+.today-goals {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.today-goals h2,
+.chart-card h2 {
+  margin-bottom: 1rem;
+}

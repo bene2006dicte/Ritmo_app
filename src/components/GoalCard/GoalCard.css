@@ -1,0 +1,50 @@
+.goal-card {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  margin-bottom: 1rem;
+  width: 250px; /* taille type, tu peux ajuster */
+}
+
+.goal-card-icon {
+  font-size: 2rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  margin-right: 1rem;
+}
+
+.goal-card-content {
+  flex: 1;
+}
+
+.goal-card-title {
+  font-size: 1.1rem;
+  margin: 0 0 0.3rem 0;
+}
+
+.goal-card-stat {
+  font-size: 0.9rem;
+  color: #4caf50; /* vert pour les statistiques */
+  margin-bottom: 0.5rem;
+}
+
+.goal-card-progress {
+  background-color: #eee;
+  height: 8px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #4caf50;
+  transition: width 0.3s ease;
+}

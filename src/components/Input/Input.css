@@ -1,0 +1,15 @@
+.ritmo-input {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.ritmo-input:focus {
+  border-color: #4CAF50;
+  outline: none;
+}
