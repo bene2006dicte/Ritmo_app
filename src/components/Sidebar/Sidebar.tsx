@@ -1,60 +1,73 @@
-import React from "react";
-import { Link, useLocation } from "react-router";
-import "./Sidebar.css";
+import { Link, useLocation } from 'react-router';
+import { 
+    Home, 
+    Target, 
+    Calendar, 
+    ChartLine, // Icône Statistiques de la maquette
+    User 
+} from 'lucide-react'; 
+import './Sidebar.css';
 
-interface SidebarProps {
-  username: string;
-  logoSrc?: string;
-}
+const Sidebar = () => {
+    const location = useLocation();
+    
+    // Récupération dynamique du nom depuis le localStorage (clé 'user_name')
+    // Tu devras t'assurer que lors du login/register, tu fais : localStorage.setItem('user_name', name)
+    const userName = localStorage.getItem('user_name') || "Utilisateur";
+    
+    // Initiales dynamiques pour l'avatar
+    const userInitials = userName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
 
-const Sidebar: React.FC<SidebarProps> = ({ username, logoSrc }) => {
-  const location = useLocation();
-  const navItems = [
-    { name: "Dashboard", path: "/dashboard", icon: "fas fa-chart-line" },
-    { name: "Objectifs", path: "/goals", icon: "fas fa-bullseye" },
-    { name: "Statistiques", path: "/statistics", icon: "fas fa-chart-pie" },
-    { name: "Calendrier", path: "/calendar", icon: "fas fa-calendar-alt" },
-    { name: "Profil", path: "/profile", icon: "fas fa-user" },
-  ];
+    const isActive = (path: string) => location.pathname === path ? 'active' : '';
 
-  return (
-    <aside className="sidebar">
-      <div className="sidebar-header">
-        <div className="logo">
-          {logoSrc ? (
-            <img src={logoSrc} alt="Logo" className="logo-img" />
-          ) : (
-            <div className="logo-icon">A</div>
-          )}
-          <h1>Mon App</h1>
-        </div>
-      </div>
+    return (
+        <aside className="sidebar">
+            <div className="sidebar-header">
+                <div className="logo">
+                    <div className="logo-icon">
+                        <Target size={24} color="white" />
+                    </div>
+                    <h1>Ritmo</h1>
+                </div>
+            </div>
 
-      <nav className="sidebar-nav">
-        {navItems.map((item) => (
-          <Link
-            key={item.path}
-            to={item.path}
-            className={`nav-item ${location.pathname === item.path ? "active" : ""}`}
-          >
-            <i className={item.icon}></i>
-            {item.name}
-          </Link>
-        ))}
-      </nav>
+            <nav className="sidebar-nav">
+                <Link to="/dashboard" className={`nav-item ${isActive('/dashboard')}`}>
+                    <Home size={20} />
+                    <span>Tableau de bord</span>
+                </Link>
 
-      <div className="sidebar-footer">
-        <div className="user-info">
-          <div className="user-avatar">
-            {username.charAt(0).toUpperCase()}
-          </div>
-          <div>
-            <h4>{username}</h4>
-          </div>
-        </div>
-      </div>
-    </aside>
-  );
+                <Link to="/objectifs" className={`nav-item ${isActive('/objectifs')}`}>
+                    <Target size={20} />
+                    <span>Objectifs</span>
+                </Link>
+
+                <Link to="/calendrier" className={`nav-item ${isActive('/calendrier')}`}>
+                    <Calendar size={20} />
+                    <span>Calendrier</span>
+                </Link>
+
+                <Link to="/statistiques" className={`nav-item ${isActive('/statistiques')}`}>
+                    <ChartLine size={20} />
+                    <span>Statistiques</span>
+                </Link>
+
+                <Link to="/profil" className={`nav-item ${isActive('/profil')}`}>
+                    <User size={20} />
+                    <span>Profil</span>
+                </Link>
+            </nav>
+
+            <div className="sidebar-footer">
+                <div className="user-info">
+                    <div className="user-avatar">{userInitials}</div>
+                    <div className="user-details">
+                        <h4>{userName}</h4>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    );
 };
 
 export default Sidebar;

@@ -1,0 +1,22 @@
+/* Espacement des carrés */
+.react-calendar__month-view__days {
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px !important;
+}
+
+.react-calendar__tile {
+    height: 60px !important;
+    border-radius: 12px !important;
+    border: none !important;
+    background: #f1f5f9 !important;
+}
+
+/* Couleurs interactives */
+.tile-success { background-color: #86efac !important; color: #166534 !important; }
+.tile-fail { background-color: #fca5a5 !important; color: #991b1b !important; }
+.tile-selected { border: 3px solid #3b82f6 !important; background: white !important; }
+
+/* Barre de progression */
+.progress-bar-bg { background: #eee; height: 10px; border-radius: 5px; margin: 15px 0; overflow: hidden; }
+.progress-bar-fill { background: #3b82f6; height: 100%; transition: width 0.4s ease-in-out; }

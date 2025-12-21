@@ -1,64 +1,125 @@
-import Sidebar from "../../components/Sidebar/Sidebar";
-import Chart from "../../components/Chart/Chart";
-import GoalCard from "../../components/GoalCard/GoalCard";
-import "./Dashboard.css";
+import  { useState, useEffect } from 'react';
+import StatCard from '../../components/StatCard/StatCard';
+import goalsApi from '../../api/goals'; // Ton service API corrigé
+import './Dashboard.css';
 
-export default function Dashboard() {
-  const statsCards = [
-    { icon: "🔥", title: "Série en cours", stat: "14 jours" },
-    { icon: "🏆", title: "Taux de réussite", stat: "87%" },
-    { icon: "🎯", title: "Objectifs actifs", stat: "5" },
-    { icon: "📅", title: "Jours réussis", stat: "23" },
-  ];
+const Dashboard = () => {
+  const [goals, setGoals] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
+  // États pour les statistiques dynamiques
+  const [stats, setStats] = useState({
+    maxStreak: 0,
+    successRate: 0,
+    activeCount: 0,
+    totalCompletedDays: 0
+  });
 
-  const dailyGoals = [
-    { icon: "⏰", title: "Se réveiller à 6h", progress: 50, description: "Jour 15/30" },
-    { icon: "🏃‍♂️", title: "30 min de sport", progress: 25, description: "Jour 8/30" },
-    { icon: "📖", title: "Lire 20 pages", progress: 70, description: "Jour 22/30" },
-  ];
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+      // On récupère les objectifs depuis ton API "/objectives"
+      const response = await goalsApi.getAll();
+      const data = response.data;
+      
+      setGoals(data);
+
+      // Calcul simple des statistiques en attendant une route API dédiée aux stats
+      const active = data.length;
+      const streak = data.length > 0 ? Math.max(...data.map((g: any) => g.streak || 0)) : 0;
+      
+      setStats({
+        maxStreak: streak,
+        successRate: 0,// À calculer selon ton algorithme backend
+        activeCount: active,
+        totalCompletedDays: data.reduce((acc: number, g: any) => acc + (g.current || 0), 0)
+      });
+
+    } catch (error) {
+      console.error("Erreur dashboard:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
 
   return (
-    <div className="dashboard-wrapper">
-      <Sidebar username={"AMA"} />
+    <div className="dashboard-layout">
+      <main className="dashboard-content">
+        <header className="content-header">
+          <h1>Tableau de bord</h1>
+          <p>Bienvenue dans votre espace de suivi d'habitudes</p>
+        </header>
 
-      <div className="dashboard-content">
-        <h1>Tableau de bord</h1>
-        <p className="subtitle">Suivez vos objectifs et habitudes quotidiennes</p>
+        {/* Section des Statistiques Dynamiques */}
+        <section className="stats-grid">
+          <StatCard 
+            title="Série max" 
+            value={`${stats.maxStreak} jours`} 
+            trend="Actuel" 
+            icon="🔥" 
+            variant="orange" 
+          />
+          <StatCard 
+            title="Taux de réussite" 
+            value={`${stats.successRate}%`} 
+            trend="+5% cette semaine" 
+            icon="🏆" 
+            variant="green" 
+          />
+          <StatCard 
+            title="Objectifs actifs" 
+            value={stats.activeCount.toString()} 
+            trend="En cours" 
+            icon="🎯" 
+            variant="purple" 
+          />
+          <StatCard 
+            title="Total jours" 
+            value={stats.totalCompletedDays.toString()} 
+            trend="Cumulé" 
+            icon="📅" 
+            variant="blue" 
+          />
+        </section>
 
-        {/* Cards statistiques 2x2 */}
-        <div className="stats-grid">
-          {statsCards.map((card, idx) => (
-            <div key={idx} className="stat-card">
-              <div className="stat-icon">{card.icon}</div>
-              <div className="stat-info">
-                <h3>{card.title}</h3>
-                <p>{card.stat}</p>
-              </div>
+        <div className="dashboard-main-zone">
+          <div className="chart-container">
+            <h3>Progression hebdomadaire</h3>
+            <div className="placeholder-chart">
+              {/* Ton composant Chart ira ici */}
+              {loading ? <p>Chargement du graphique...</p> : <p>Graphique prêt</p>}
             </div>
-          ))}
-        </div>
-
-        {/* Section basse : Chart et Objectifs du jour */}
-        <div className="dashboard-bottom">
-          <div className="chart-card">
-            <h2>Progression hebdomadaire</h2>
-            <Chart title={""} data={[]} />
           </div>
 
-          <div className="today-goals">
-            <h2>Objectifs du jour</h2>
-            {dailyGoals.map((goal, idx) => (
-              <GoalCard
-                key={idx}
-                icon={{ emoji: goal.icon, color: "#4CAF50" }}
-                title={goal.title}
-                stat={goal.description}
-                progress={goal.progress}
-              />
-            ))}
-          </div>
+          <aside className="daily-goals-section">
+            <div className="section-header">
+              <h3>Objectifs du jour</h3>
+              <button className="view-all-btn">Voir tous</button>
+            </div>
+
+            {loading ? (
+              <p>Chargement des objectifs...</p>
+            ) : (
+              goals.slice(0, 3).map((goal: any) => (
+                <div key={goal.id} className="goal-mini-card">
+                  {/* Remplace par ton composant GoalCard quand il est prêt */}
+                  <div className="goal-info">
+                    <strong>{goal.title}</strong>
+                    <span>{goal.current}/{goal.duration_value} {goal.duration_unit === 'days' ? 'j' : 'm'}</span>
+                  </div>
+                  <div className={`status-dot ${goal.streak > 0 ? 'active' : ''}`}></div>
+                </div>
+              ))
+            )}
+          </aside>
         </div>
-      </div>
+      </main>
     </div>
   );
-}
+};
+
+export default Dashboard;

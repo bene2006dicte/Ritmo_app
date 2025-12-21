@@ -1,0 +1,309 @@
+/* --- LAYOUT GLOBAL --- */
+.goals-page { 
+    padding: 30px; 
+    background: #f8faff; 
+    min-height: 100vh; 
+}
+
+.goals-card { 
+    background: white; 
+    border-radius: 16px; 
+    padding: 24px; 
+    border: 1px solid #f1f5f9; 
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.card-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 25px; 
+}
+
+.title-group { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+}
+
+/* --- TABLEAU DES OBJECTIFS --- */
+.goals-table { 
+    width: 100%; 
+    border-collapse: collapse; 
+}
+
+.goals-table th { 
+    text-align: left; 
+    padding: 12px; 
+    color: #64748b; 
+    font-size: 14px;
+    border-bottom: 1px solid #f1f5f9; 
+}
+
+.goals-table td { 
+    padding: 16px 12px; 
+    border-bottom: 1px solid #f1f5f9; 
+}
+
+.goal-name-cell { 
+    display: flex; 
+    flex-direction: column; 
+}
+
+.goal-title { 
+    font-weight: 600; 
+    color: #1e293b; 
+}
+
+.goal-duration { 
+    font-size: 12px; 
+    color: #94a3b8; 
+}
+
+/* --- PROGRESSION & STATUTS --- */
+.progress-wrapper { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 4px; 
+}
+
+.progress-bg { 
+    width: 120px; 
+    height: 8px; 
+    background: #f1f5f9; 
+    border-radius: 10px; 
+    overflow: hidden; 
+}
+
+.progress-bar { 
+    height: 100%; 
+    background: #6366f1; 
+    transition: width 0.4s ease; 
+}
+
+.progress-text { 
+    font-size: 12px; 
+    color: #64748b; 
+}
+
+.streak-container { 
+    display: flex; 
+    align-items: center; 
+    gap: 6px; 
+    font-weight: 600; 
+    color: #f59e0b; 
+}
+
+.status-tag.active { 
+    background: #ecfdf5; 
+    color: #10b981; 
+    padding: 6px 12px; 
+    border-radius: 20px; 
+    font-size: 12px; 
+    font-weight: 500;
+}
+
+/* --- BOUTONS ACTIONS (STYLE PASTEL) --- */
+.action-icons { 
+    display: flex; 
+    gap: 10px; 
+}
+
+.btn-action { 
+    border: none; 
+    padding: 8px; 
+    border-radius: 10px; 
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    transition: all 0.2s; 
+}
+
+.btn-action.edit { 
+    background: rgba(99, 102, 241, 0.1); 
+    color: #6366f1; 
+}
+
+.btn-action.edit:hover { 
+    background: #6366f1; 
+    color: white; 
+}
+
+.btn-action.delete { 
+    background: rgba(239, 68, 68, 0.1); 
+    color: #ef4444; 
+}
+
+.btn-action.delete:hover { 
+    background: #ef4444; 
+    color: white; 
+}
+
+/* --- EFFET DE MODALE SUPERPOSÉE --- */
+.modal-backdrop {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.modal-container.overlay-style {
+    background: white;
+    border-radius: 24px;
+    padding: 32px;
+    width: 95%;
+    max-width: 500px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+    animation: modalAppear 0.3s ease-out;
+}
+
+@keyframes modalAppear {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* --- FORMULAIRE DANS LA MODALE (AVEC ESPACEMENT CORRIGÉ) --- */
+.modal-top { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 24px; 
+}
+
+.modal-top h2 { 
+    font-size: 20px; 
+    color: #1e293b; 
+}
+
+.close-x-transparent { 
+    background: transparent; 
+    border: none; 
+    cursor: pointer; 
+    color: #94a3b8; 
+    transition: color 0.2s;
+}
+
+.close-x-transparent:hover { color: #ef4444; }
+
+/* MODIFICATION ICI : Espacement forcé entre les colonnes */
+.goal-form-grid { 
+    display: grid t; 
+    grid-template-columns: 1fr 1fr; 
+    column-gap: 20px ;
+    row-gap: 20px;
+    width: 100%;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 0; /* Sécurité pour la grille */
+}
+
+.input-group.full { grid-column: span 2; }
+
+.input-group label { 
+    font-size: 14px; 
+    font-weight: 600; 
+    color: #475569; 
+    margin-bottom: 8px; 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+}
+
+.input-group input, .input-group select { 
+    width: 100%;
+    padding: 12px; 
+    border: 1px solid #e2e8f0; 
+    border-radius: 12px; 
+    outline: none; 
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.input-group input:focus { border-color: #6366f1; }
+
+/* TOGGLE JOURS/MOIS */
+.type-toggle { 
+    display: flex; 
+    background: #f1f5f9; 
+    padding: 4px; 
+    border-radius: 10px; 
+    width: 100%;
+}
+
+.type-toggle button { 
+    flex: 1; 
+    border: none; 
+    padding: 8px; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    background: transparent; 
+    color: #64748b; 
+    font-weight: 500;
+}
+
+.type-toggle button.active { 
+    background: white; 
+    color: #6366f1; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+}
+
+/* FOOTER MODALE */
+.modal-footer.full { 
+    grid-column: span 2; 
+    display: flex; 
+    gap: 12px; 
+    margin-top: 10px; 
+}
+
+.save-btn-custom { 
+    flex: 1; 
+    background: #6366f1; 
+    color: white; 
+    border: none; 
+    padding: 14px; 
+    border-radius: 12px; 
+    font-weight: 600; 
+    cursor: pointer; 
+}
+
+.cancel-btn-custom { 
+    flex: 1; 
+    background: white; 
+    border: 1px solid #e2e8f0; 
+    color: #64748b;
+    padding: 14px; 
+    border-radius: 12px; 
+    cursor: pointer; 
+}
+
+.add-goal-btn {
+    background-color: #6366f1;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.add-goal-btn:hover {
+    background-color: #4f46e5; 
+}
+
+.add-goal-btn:active {
+    transform: scale(0.98); 
+}
