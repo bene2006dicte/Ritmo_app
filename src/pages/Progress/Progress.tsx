@@ -1,107 +1,131 @@
-import  { useState, useEffect } from 'react';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
-import './Progress.css';
-import axiosClient from '../../api/axiosClient';
-const ProgressPage = () => {
-    // 1. Liste fixe pour éviter le trait jaune de l'éditeur
-    const objectives = [
-        { id: 1, title: 'Sport 30min/jour' },
-        { id: 2, title: 'Routine matinale' }
-    ];
+import { useEffect, useState } from "react";
+import ProgressCalendar from "../../components/Calendar/ProgressCalendar";
+import ProgressService from "../../api/progress"; // <-- juste l'objet, pas les types
+import type { ProgressData, Objective } from "../../api/progress"; // <-- type-only import
+import "./Progress.css";
 
-    const [selectedObj, setSelectedObj] = useState<number>(1);
-    const [selectedDate, setSelectedDate] = useState(new Date());
-    const [progressData, setProgressData] = useState<string[]>([]);
+export default function ProgressPage() {
+  const [objectives, setObjectives] = useState<Objective[]>([]);
+  const [selectedObjective, setSelectedObjective] = useState<Objective | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [progressSummary, setProgressSummary] = useState<{ completed: number; total: number }>({
+    completed: 0,
+    total: 0,
+  });
+  const [progressData, setProgressData] = useState<ProgressData[]>([]);
 
-    // Formatage de la date pour l'API (YYYY-MM-DD)
-    const dateStr = selectedDate.toLocaleDateString('en-CA');
+  // Récupérer les objectifs
+  useEffect(() => {
+    ProgressService.getUserObjectives().then((res) => setObjectives(res));
+  }, []);
 
-    // 2. Chargement dynamique au changement d'objectif
-    useEffect(() => {
-        const fetchProgress = async () => {
-            try {
-                const res = await axiosClient.get(`/progress/${selectedObj}`);
-                setProgressData(res.data); // Ton API doit renvoyer ["2025-12-01", "2025-12-05"]
-            } catch (err) {
-                console.error("Erreur de chargement", err);
-            }
-        };
-        fetchProgress();
-    }, [selectedObj]);
+  // Charger les progressions lorsque l'objectif change
+  useEffect(() => {
+    if (!selectedObjective) return;
+    loadProgress(selectedObjective.id);
+  }, [selectedObjective]);
 
-    // 3. Actions Valider/Annuler synchronisées
-    const handleToggle = async (type: 'add' | 'remove') => {
-        try {
-            if (type === 'add') {
-                await axiosClient.post('/progress', { objective_id: selectedObj, date: dateStr });
-                if (!progressData.includes(dateStr)) setProgressData([...progressData, dateStr]);
-            } else {
-                await axiosClient.delete(`/progress/${selectedObj}/${dateStr}`);
-                setProgressData(progressData.filter(d => d !== dateStr));
-            }
-        } catch (err) {
-            console.error("Erreur API", err);
-        }
-    };
+  // Fonction pour charger l'historique d'un objectif et mettre à jour le récap
+  const loadProgress = async (objectiveId: number) => {
+    const data = await ProgressService.getObjectiveProgress(objectiveId);
+    setProgressData(data);
 
-    const getTileClassName = ({ date, view }: any) => {
-        if (view !== 'month') return '';
-        const dStr = date.toLocaleDateString('en-CA');
-        const today = new Date(); today.setHours(0,0,0,0);
+    // Durée totale de l'objectif (en jours)
+    const totalDays = selectedObjective
+      ? selectedObjective.duration_unit === "days"
+        ? selectedObjective.duration_value
+        : selectedObjective.duration_value * 30
+      : 0;
 
-        if (progressData.includes(dStr)) return 'tile-success'; // Vert
-        if (dStr === dateStr) return 'tile-selected'; // Bleu
-        if (date < today) return 'tile-fail'; // Rouge
-        return '';
-    };
+    const completed = data.filter((p) => p.completed).length;
+    setProgressSummary({ completed, total: totalDays });
+  };
 
-    // Calcul du % pour la barre de progression
-    const percent = Math.round((progressData.length / 30) * 100);
+  // Ajouter une progression pour la date sélectionnée
+  const handleAddProgress = async () => {
+    if (!selectedObjective || !selectedDate) return;
 
-    return (
-        <div className="progress-container">
-            {/* BOUTONS OBJECTIFS : Cliquables et réactifs */}
-            <div className="objectives-header">
-                {objectives.map(obj => (
-                    <button 
-                        key={obj.id} 
-                        className={`obj-btn ${selectedObj === obj.id ? 'active' : ''}`}
-                        onClick={() => setSelectedObj(obj.id)} 
-                    >
-                        {obj.title} ✕
-                    </button>
-                ))}
-            </div>
+    const formattedDate = selectedDate.toISOString().split("T")[0];
+    await ProgressService.submitProgress(selectedObjective.id, formattedDate, true);
 
-            <div className="progress-main">
-                <div className="calendar-card">
-                    <Calendar 
-                        value={selectedDate} 
-                        onClickDay={(date) => setSelectedDate(date)} 
-                        tileClassName={getTileClassName} 
-                    />
-                </div>
+    // Recharger les progressions et le récap
+    loadProgress(selectedObjective.id);
+    setSelectedDate(null);
+  };
 
-                <div className="sidebar-right">
-                    <div className="card-white">
-                        <h3>Ajouter un progrès</h3>
-                        <p>Date sélectionnée : <strong>{selectedDate.toLocaleDateString('fr-FR')}</strong></p>
-                        <button className="btn-valider" onClick={() => handleToggle('add')}>Valider</button>
-                        <button className="btn-annuler" onClick={() => handleToggle('remove')}>Annuler</button>
-                    </div>
+  return (
+    <div className="progress-page">
+      <div className="progress-top">
+        <select
+          className="objective-select"
+          value={selectedObjective?.id || ""}
+          onChange={(e) => {
+            const obj = objectives.find((o) => o.id === Number(e.target.value));
+            setSelectedObjective(obj || null);
+          }}
+        >
+          <option value="">Choisir un objectif</option>
+          {objectives.map((obj) => (
+            <option key={obj.id} value={obj.id}>
+              {obj.title}
+            </option>
+          ))}
+        </select>
+      </div>
 
-                    <div className="card-white">
-                        <h3>Récapitulatif de l'objectif</h3>
-                        <div className="progress-bar-bg">
-                            <div className="progress-bar-fill" style={{ width: `${percent}%` }}></div>
-                        </div>
-                        <p>{percent}% complété - {progressData.length}/30 jours</p>
-                    </div>
-                </div>
-            </div>
+      <div className="progress-content">
+        <div className="calendar-container">
+          <ProgressCalendar
+            objectiveId={selectedObjective?.id || null}
+            progressData={progressData}
+            onSelectDate={(date) => setSelectedDate(date)}
+          />
         </div>
-    );
-};
 
-export default ProgressPage;
+        <div className="progress-sidebar">
+          <div className="add-progress">
+            <h3>Ajouter un progrès</h3>
+            <input
+              type="text"
+              value={selectedDate ? selectedDate.toLocaleDateString() : ""}
+              readOnly
+            />
+            <button className="btn-validate" onClick={handleAddProgress}>
+              Valider
+            </button>
+            <button
+              className="btn-cancel"
+              onClick={() => setSelectedDate(null)}
+            >
+              Annuler
+            </button>
+          </div>
+
+          <div className="progress-summary">
+            <h3>Récapitulatif de l'objectif</h3>
+            {selectedObjective && (
+              <>
+                <p>{selectedObjective.title}</p>
+                <p>
+                  {progressSummary.completed}/{progressSummary.total} jours complétés
+                </p>
+                <div className="progress-bar">
+                  <div
+                    className="progress-bar-fill"
+                    style={{
+                      width: `${
+                        progressSummary.total === 0
+                          ? 0
+                          : (progressSummary.completed / progressSummary.total) * 100
+                      }%`,
+                    }}
+                  ></div>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

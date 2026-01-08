@@ -30,14 +30,17 @@
 .goals-table { 
     width: 100%; 
     border-collapse: collapse; 
+   
 }
 
 .goals-table th { 
     text-align: left; 
     padding: 12px; 
-    color: #64748b; 
-    font-size: 14px;
+    color: black;
+    font-weight: bold;
+    font-size: 16px;
     border-bottom: 1px solid #f1f5f9; 
+     background-color: rgb(229, 235, 238);
 }
 
 .goals-table td { 

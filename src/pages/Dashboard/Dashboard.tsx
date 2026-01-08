@@ -1,49 +1,32 @@
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import StatCard from '../../components/StatCard/StatCard';
-import goalsApi from '../../api/goals'; // Ton service API corrigé
+import {dashboardApi, type DashboardStats } from '../../api/Dashboard';
 import './Dashboard.css';
 
 const Dashboard = () => {
-  const [goals, setGoals] = useState([]);
-  const [loading, setLoading] = useState(true);
-  
-  // États pour les statistiques dynamiques
-  const [stats, setStats] = useState({
+  const [stats, setStats] = useState<DashboardStats>({
+    activeObjectives: 0,
+    totalCompletedDays: 0,
     maxStreak: 0,
     successRate: 0,
-    activeCount: 0,
-    totalCompletedDays: 0
+    totalObjectiveDays: 0
   });
+  const [loading, setLoading] = useState(true);
 
-  const fetchDashboardData = async () => {
+  const fetchStats = async () => {
     try {
       setLoading(true);
-      // On récupère les objectifs depuis ton API "/objectives"
-      const response = await goalsApi.getAll();
-      const data = response.data;
-      
-      setGoals(data);
-
-      // Calcul simple des statistiques en attendant une route API dédiée aux stats
-      const active = data.length;
-      const streak = data.length > 0 ? Math.max(...data.map((g: any) => g.streak || 0)) : 0;
-      
-      setStats({
-        maxStreak: streak,
-        successRate: 0,// À calculer selon ton algorithme backend
-        activeCount: active,
-        totalCompletedDays: data.reduce((acc: number, g: any) => acc + (g.current || 0), 0)
-      });
-
+      const response = await dashboardApi.getStats();
+      setStats(response);
     } catch (error) {
-      console.error("Erreur dashboard:", error);
+      console.error("Erreur récupération stats:", error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchDashboardData();
+    fetchStats();
   }, []);
 
   return (
@@ -66,13 +49,13 @@ const Dashboard = () => {
           <StatCard 
             title="Taux de réussite" 
             value={`${stats.successRate}%`} 
-            trend="+5% cette semaine" 
+            trend="Sur la durée" 
             icon="🏆" 
             variant="green" 
           />
           <StatCard 
             title="Objectifs actifs" 
-            value={stats.activeCount.toString()} 
+            value={stats.activeObjectives.toString()} 
             trend="En cours" 
             icon="🎯" 
             variant="purple" 
@@ -85,38 +68,6 @@ const Dashboard = () => {
             variant="blue" 
           />
         </section>
-
-        <div className="dashboard-main-zone">
-          <div className="chart-container">
-            <h3>Progression hebdomadaire</h3>
-            <div className="placeholder-chart">
-              {/* Ton composant Chart ira ici */}
-              {loading ? <p>Chargement du graphique...</p> : <p>Graphique prêt</p>}
-            </div>
-          </div>
-
-          <aside className="daily-goals-section">
-            <div className="section-header">
-              <h3>Objectifs du jour</h3>
-              <button className="view-all-btn">Voir tous</button>
-            </div>
-
-            {loading ? (
-              <p>Chargement des objectifs...</p>
-            ) : (
-              goals.slice(0, 3).map((goal: any) => (
-                <div key={goal.id} className="goal-mini-card">
-                  {/* Remplace par ton composant GoalCard quand il est prêt */}
-                  <div className="goal-info">
-                    <strong>{goal.title}</strong>
-                    <span>{goal.current}/{goal.duration_value} {goal.duration_unit === 'days' ? 'j' : 'm'}</span>
-                  </div>
-                  <div className={`status-dot ${goal.streak > 0 ? 'active' : ''}`}></div>
-                </div>
-              ))
-            )}
-          </aside>
-        </div>
       </main>
     </div>
   );

@@ -1,22 +1,77 @@
-/* Espacement des carrés */
-.react-calendar__month-view__days {
-    display: grid !important;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 12px !important;
+.progress-page {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
 }
 
-.react-calendar__tile {
-    height: 60px !important;
-    border-radius: 12px !important;
-    border: none !important;
-    background: #f1f5f9 !important;
+.progress-top {
+  margin-bottom: 15px;
 }
 
-/* Couleurs interactives */
-.tile-success { background-color: #86efac !important; color: #166534 !important; }
-.tile-fail { background-color: #fca5a5 !important; color: #991b1b !important; }
-.tile-selected { border: 3px solid #3b82f6 !important; background: white !important; }
+.objective-select {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
 
-/* Barre de progression */
-.progress-bar-bg { background: #eee; height: 10px; border-radius: 5px; margin: 15px 0; overflow: hidden; }
-.progress-bar-fill { background: #3b82f6; height: 100%; transition: width 0.4s ease-in-out; }
+.progress-content {
+  display: flex;
+  gap: 20px;
+}
+
+.calendar-container {
+  flex: 2;
+}
+
+.progress-sidebar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.add-progress input {
+  display: block;
+  margin-bottom: 10px;
+  padding: 6px;
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.add-progress button {
+  width: 48%;
+  padding: 8px;
+  margin-right: 4%;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+}
+
+.add-progress .btn-validate {
+  background-color: #22c55e;
+}
+
+.add-progress .btn-cancel {
+  background-color: #ef4444;
+}
+
+.progress-summary {
+  background: #f9f9f9;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.progress-bar {
+  height: 8px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  margin-top: 5px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: #22c55e;
+  border-radius: 4px;
+}

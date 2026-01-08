@@ -1,0 +1,103 @@
+.calendar-wrapper {
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+}
+
+/* Supprimer bordures par défaut */
+.rbc-month-view {
+  border: none;
+}
+
+.rbc-day-bg {
+  border-radius: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Aujourd'hui */
+.day-today {
+  border: 2px solid #3b82f6 !important; /* contour bleu */
+  border-radius: 8px;
+}
+
+/* Progression réussie */
+.day-success {
+  background-color: #22c55e !important; /* vert plein */
+  color: white;
+  border-radius: 8px;
+  z-index: 0;
+}
+
+/* Progression échouée */
+.day-failed {
+  background-color: #ef4444 !important; /* rouge plein */
+  color: white;
+  border-radius: 8px;
+  z-index: 0;
+}
+
+/* Jours à venir */
+.day-future {
+  background-color: #e5e7eb !important;
+  color: #6b7280;
+  border-radius: 8px;
+}
+
+/* Supprimer style événements par défaut */
+.rbc-event {
+  background: transparent !important;
+  border: none;
+}
+
+/* Centrer les nombres dans les cases */
+.rbc-date-cell {
+  text-align: center;
+  font-weight: 500;
+  z-index: 2;
+  position: relative;
+}
+
+/* Optionnel : survol pour afficher que c'est cliquable */
+.rbc-date-cell:hover {
+  cursor: pointer;
+  background-color: #d1d5db; /* gris clair au survol */
+}
+
+/* Pour gérer la superposition d'aujourd'hui + progression */
+.rbc-day-bg.day-today.day-success {
+  border: 2px solid #3b82f6 !important;
+  background-color: #22c55e !important;
+}
+
+.rbc-day-bg.day-today.day-failed {
+  border: 2px solid #3b82f6 !important;
+  background-color: #ef4444 !important;
+}
+/* Jours avant le début de l'objectif */
+.day-before-start {
+  background-color: #f3f4f6 !important; /* gris très clair */
+  color: #6b7280;
+}
+
+/* Le reste reste identique : .day-success, .day-failed, .day-today, .day-future */
+
+.day-before-start {
+  background-color: white !important;
+}
+
+.day-today {
+  border: 2px solid #3b82f6 !important;
+}
+
+.day-success {
+  background-color: #22c55e !important;
+}
+
+.day-failed {
+  background-color: #ef4444 !important;
+}
+
+.day-future {
+  background-color: #e5e7eb !important;
+}
