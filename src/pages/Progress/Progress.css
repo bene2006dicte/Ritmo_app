@@ -39,10 +39,15 @@
   border: 1px solid #ccc;
 }
 
+.add-progress .buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
 .add-progress button {
-  width: 48%;
+  flex: 1;
   padding: 8px;
-  margin-right: 4%;
+  margin: 0 4px;
   border: none;
   border-radius: 5px;
   color: white;
@@ -55,6 +60,12 @@
 
 .add-progress .btn-cancel {
   background-color: #ef4444;
+}
+
+.error-message {
+  color: #ef4444;
+  font-size: 0.9rem;
+  margin-top: 8px;
 }
 
 .progress-summary {

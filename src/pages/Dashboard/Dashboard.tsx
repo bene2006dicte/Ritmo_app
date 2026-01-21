@@ -41,7 +41,7 @@ const Dashboard = () => {
         <section className="stats-grid">
           <StatCard 
             title="Série max" 
-            value={`${stats.maxStreak} jours`} 
+            value={`${stats.maxStreak} jour(s)`} 
             trend="Actuel" 
             icon="🔥" 
             variant="orange" 

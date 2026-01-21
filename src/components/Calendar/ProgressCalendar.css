@@ -2,6 +2,29 @@
   background: white;
   padding: 16px;
   border-radius: 12px;
+  position: relative;
+  pointer-events: auto; /* s'assurer que les clics passent */
+}
+
+/* Toolbar navigation */
+.rbc-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  z-index: 2;
+}
+
+.rbc-btn-group button {
+  background: white;
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.rbc-btn-group button:hover {
+  background-color: #f3f4f6;
 }
 
 /* Supprimer bordures par défaut */
@@ -15,15 +38,16 @@
   z-index: 1;
 }
 
-/* Aujourd'hui */
+/* Aujourd'hui (non validé) */
 .day-today {
-  border: 2px solid #3b82f6 !important; /* contour bleu */
+  border: 2px solid #3b82f6 !important;
   border-radius: 8px;
+  background-color: white !important;
 }
 
 /* Progression réussie */
 .day-success {
-  background-color: #22c55e !important; /* vert plein */
+  background-color: #22c55e !important;
   color: white;
   border-radius: 8px;
   z-index: 0;
@@ -31,7 +55,7 @@
 
 /* Progression échouée */
 .day-failed {
-  background-color: #ef4444 !important; /* rouge plein */
+  background-color: #ef4444 !important;
   color: white;
   border-radius: 8px;
   z-index: 0;
@@ -40,6 +64,13 @@
 /* Jours à venir */
 .day-future {
   background-color: #e5e7eb !important;
+  color: #6b7280;
+  border-radius: 8px;
+}
+
+/* Jours avant le début de l'objectif */
+.day-before-start {
+  background-color: white !important;
   color: #6b7280;
   border-radius: 8px;
 }
@@ -58,13 +89,13 @@
   position: relative;
 }
 
-/* Optionnel : survol pour afficher que c'est cliquable */
+/* Survol pour montrer que c'est cliquable */
 .rbc-date-cell:hover {
   cursor: pointer;
-  background-color: #d1d5db; /* gris clair au survol */
+  background-color: #d1d5db;
 }
 
-/* Pour gérer la superposition d'aujourd'hui + progression */
+/* Superposition cohérente : aujourd'hui + progression */
 .rbc-day-bg.day-today.day-success {
   border: 2px solid #3b82f6 !important;
   background-color: #22c55e !important;
@@ -73,31 +104,4 @@
 .rbc-day-bg.day-today.day-failed {
   border: 2px solid #3b82f6 !important;
   background-color: #ef4444 !important;
-}
-/* Jours avant le début de l'objectif */
-.day-before-start {
-  background-color: #f3f4f6 !important; /* gris très clair */
-  color: #6b7280;
-}
-
-/* Le reste reste identique : .day-success, .day-failed, .day-today, .day-future */
-
-.day-before-start {
-  background-color: white !important;
-}
-
-.day-today {
-  border: 2px solid #3b82f6 !important;
-}
-
-.day-success {
-  background-color: #22c55e !important;
-}
-
-.day-failed {
-  background-color: #ef4444 !important;
-}
-
-.day-future {
-  background-color: #e5e7eb !important;
 }

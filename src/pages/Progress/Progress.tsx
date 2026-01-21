@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ProgressCalendar from "../../components/Calendar/ProgressCalendar";
-import ProgressService from "../../api/progress"; // <-- juste l'objet, pas les types
-import type { ProgressData, Objective } from "../../api/progress"; // <-- type-only import
+import ProgressService from "../../api/progress";
+import type { ProgressData, Objective } from "../../api/progress";
 import "./Progress.css";
 
 export default function ProgressPage() {
@@ -13,8 +13,9 @@ export default function ProgressPage() {
     total: 0,
   });
   const [progressData, setProgressData] = useState<ProgressData[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Récupérer les objectifs
+  // Charger les objectifs
   useEffect(() => {
     ProgressService.getUserObjectives().then((res) => setObjectives(res));
   }, []);
@@ -30,7 +31,6 @@ export default function ProgressPage() {
     const data = await ProgressService.getObjectiveProgress(objectiveId);
     setProgressData(data);
 
-    // Durée totale de l'objectif (en jours)
     const totalDays = selectedObjective
       ? selectedObjective.duration_unit === "days"
         ? selectedObjective.duration_value
@@ -45,12 +45,14 @@ export default function ProgressPage() {
   const handleAddProgress = async () => {
     if (!selectedObjective || !selectedDate) return;
 
-    const formattedDate = selectedDate.toISOString().split("T")[0];
-    await ProgressService.submitProgress(selectedObjective.id, formattedDate, true);
-
-    // Recharger les progressions et le récap
-    loadProgress(selectedObjective.id);
-    setSelectedDate(null);
+    try {
+      await ProgressService.submitProgress(selectedObjective, selectedDate, true);
+      await loadProgress(selectedObjective.id);
+      setSelectedDate(null);
+      setErrorMessage(null);
+    } catch (error: any) {
+      setErrorMessage(error.message);
+    }
   };
 
   return (
@@ -79,6 +81,7 @@ export default function ProgressPage() {
             objectiveId={selectedObjective?.id || null}
             progressData={progressData}
             onSelectDate={(date) => setSelectedDate(date)}
+            startDate={selectedObjective?.start_date}
           />
         </div>
 
@@ -90,15 +93,15 @@ export default function ProgressPage() {
               value={selectedDate ? selectedDate.toLocaleDateString() : ""}
               readOnly
             />
-            <button className="btn-validate" onClick={handleAddProgress}>
-              Valider
-            </button>
-            <button
-              className="btn-cancel"
-              onClick={() => setSelectedDate(null)}
-            >
-              Annuler
-            </button>
+            <div className="buttons">
+              <button className="btn-validate" onClick={handleAddProgress}>
+                Valider
+              </button>
+              <button className="btn-cancel" onClick={() => setSelectedDate(null)}>
+                Annuler
+              </button>
+            </div>
+            {errorMessage && <p className="error-message">{errorMessage}</p>}
           </div>
 
           <div className="progress-summary">

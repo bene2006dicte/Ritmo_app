@@ -5,6 +5,7 @@ import Register from "./pages/Register/Register";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Goals from "./pages/Goals/Goals"; 
 import ProgressPage from "./pages/Progress/Progress"; // Ta page calendrier
+import Profil from "./pages/Profil/Profil";
 
 const RootLayout = () => {
   return (
@@ -34,6 +35,7 @@ const router = createBrowserRouter([
       { path: "/dashboard", element: <Dashboard /> },
       { path: "/objectifs", element: <Goals /> }, 
       { path: "/calendrier", element: <ProgressPage /> }, // TON CALENDRIER EST ICI
+      { path: "/profil" , element: <Profil />},
     ],
   },
 

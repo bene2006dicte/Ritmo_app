@@ -1,114 +1,122 @@
+/* === Sidebar container === */
 .sidebar {
-    width: 280px;
-    min-width: 280px;
-    background: white;
-    border-right: 1px solid #e2e8f0;
-    padding: 30px 0;
-    
-    /* --- MODIFICATION POUR LE STICKY --- */
-    position: sticky; /* Reste en place au défilement */
-    top: 0;           /* Se colle en haut de l'écran */
-    height: 100vh;    /* Prend toute la hauteur de la fenêtre */
-    /* ------------------------------------ */
+  width: 280px;
+  min-width: 280px;
+  background: #ffffff;
+  border-right: 1px solid #e2e8f0;
+  padding: 30px 0;
 
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    z-index: 100;    /* Pour rester au-dessus des autres éléments si besoin */
+  /* Sticky sidebar */
+  position: sticky;
+  top: 0;
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  z-index: 100;
 }
 
+/* === Header with logo === */
 .sidebar-header {
-    padding: 0 25px 30px;
-    border-bottom: 1px solid #f1f5f9;
-    margin-bottom: 25px;
+  /* padding: 0 25px 30px; */
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 auto 15px; /* moins de marge à gauche/droite et en bas */
 }
 
 .logo {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
 }
 
-.logo-icon {
-    width: 45px;
-    height: 45px;
-    background: linear-gradient(135deg, #6366f1, #4f46e5);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.logo-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;       /* garde le ratio du logo */
+  /* border-radius: 8px;      arrondi subtil */
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); effet pro */
+  display: block;
 }
 
-.logo h1 {
-    font-size: 24px;
-    font-weight: 700;
-    color: #6366f1;
-    margin: 0;
+.logo-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #6366f1;
+  margin: 0;
+  line-height: 1;
 }
 
+/* === Navigation === */
 .sidebar-nav {
-    padding: 0 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 16px 20px;
-    border-radius: 12px;
-    color: #64748b;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  color: #64748b;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-weight: 500;
 }
 
 .nav-item:hover {
-    background: #f1f5f9;
-    color: #6366f1;
-    transform: translateX(5px);
+  background: #f1f5f9;
+  color: #6366f1;
+  transform: translateX(5px);
 }
 
 .nav-item.active {
-    background: linear-gradient(135deg, #818cf8, #6366f1);
-    color: white;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
-.sidebar-footer {
-    margin-top: auto;
-    padding: 25px;
-    border-top: 1px solid #e2e8f0;
-}
-
-.user-info {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.user-avatar {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #6366f1, #4f46e5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 600;
-    font-size: 16px;
-}
-
-.user-details h4 {
-    font-size: 16px;
-    font-weight: 600;
-    color: #1e293b;
-    margin: 0;
+  background: linear-gradient(135deg, #818cf8, #6366f1);
+  color: #ffffff;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .nav-item.active svg {
-    stroke: white;
+  stroke: #ffffff;
+}
+
+/* === Footer (user info) === */
+.sidebar-footer {
+  margin-top: auto;
+  padding: 25px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.user-details h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
 }

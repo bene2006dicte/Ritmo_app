@@ -1,20 +1,22 @@
 import { Link, useLocation } from 'react-router';
-import { 
-    Home, 
-    Target, 
-    Calendar, 
+import logo from "../../assets/images/Logo.png";
+
+import {
+    Home,
+    Target,
+    Calendar,
     ChartLine, // Icône Statistiques de la maquette
-    User 
-} from 'lucide-react'; 
+    User
+} from 'lucide-react';
 import './Sidebar.css';
 
 const Sidebar = () => {
     const location = useLocation();
-    
+
     // Récupération dynamique du nom depuis le localStorage (clé 'user_name')
     // Tu devras t'assurer que lors du login/register, tu fais : localStorage.setItem('user_name', name)
     const userName = localStorage.getItem('user_name') || "Utilisateur";
-    
+
     // Initiales dynamiques pour l'avatar
     const userInitials = userName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
 
@@ -24,11 +26,10 @@ const Sidebar = () => {
         <aside className="sidebar">
             <div className="sidebar-header">
                 <div className="logo">
-                    <div className="logo-icon">
-                        <Target size={24} color="white" />
-                    </div>
-                    <h1>Ritmo</h1>
+                    <img src={logo} alt="Logo Ritmo" className="logo-img" />
+                    <h1 className="logo-title">Ritmo</h1>
                 </div>
+
             </div>
 
             <nav className="sidebar-nav">
@@ -58,14 +59,14 @@ const Sidebar = () => {
                 </Link>
             </nav>
 
-            <div className="sidebar-footer">
+            {/* <div className="sidebar-footer">
                 <div className="user-info">
                     <div className="user-avatar">{userInitials}</div>
                     <div className="user-details">
                         <h4>{userName}</h4>
                     </div>
                 </div>
-            </div>
+            </div> */}
         </aside>
     );
 };

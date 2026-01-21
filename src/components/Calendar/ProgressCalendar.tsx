@@ -2,12 +2,20 @@ import {
   Calendar as BigCalendar,
   dateFnsLocalizer,
 } from "react-big-calendar";
-import { format, parse, startOfWeek, getDay, isToday, isAfter, isBefore } from "date-fns";
+import {
+  format,
+  parse,
+  startOfWeek,
+  getDay,
+  isAfter,
+  isBefore,
+  parseISO,
+  isSameDay,
+} from "date-fns";
 import { fr } from "date-fns/locale/fr";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "./ProgressCalendar.css";
 import { useEffect, useState } from "react";
-import axiosClient from "../../api/axiosClient";
 
 const locales = { fr };
 
@@ -32,6 +40,13 @@ interface Props {
   startDate?: string; // date de début de l'objectif
 }
 
+const toLocalDateOnly = (input: string | Date) => {
+  const d = typeof input === "string" ? parseISO(input) : input;
+  const local = new Date(d);
+  local.setHours(0, 0, 0, 0);
+  return local;
+};
+
 export default function ProgressCalendar({
   objectiveId,
   progressData,
@@ -39,47 +54,66 @@ export default function ProgressCalendar({
   startDate,
 }: Props) {
   const [events, setEvents] = useState<any[]>([]);
+  const [currentDate, setCurrentDate] = useState<Date>(new Date()); // état contrôlé
 
   useEffect(() => {
     if (!objectiveId) return;
 
-    // Transformer progressData en événements pour le calendrier
-    const formatted = progressData.map((p) => ({
-      id: p.id,
+    // Déduplication : un seul événement par jour
+    const byDay = new Map<string, { start: Date; end: Date; completed: boolean }>();
+
+    progressData.forEach((p) => {
+      const day = toLocalDateOnly(p.date);
+      const key = day.toDateString();
+      const existing = byDay.get(key);
+      const completed = p.completed || existing?.completed || false;
+      byDay.set(key, { start: day, end: day, completed });
+    });
+
+    const formatted = Array.from(byDay.values()).map((e) => ({
       title: "",
-      start: new Date(p.date),
-      end: new Date(p.date),
-      completed: p.completed,
+      start: e.start,
+      end: e.end,
+      completed: e.completed,
     }));
 
     setEvents(formatted);
   }, [progressData, objectiveId]);
 
   const dayClassGetter = (date: Date) => {
-    const today = new Date();
+    const d = toLocalDateOnly(date);
+    const today = toLocalDateOnly(new Date());
 
-    // Avant le début de l'objectif → blanc
-    if (startDate && isBefore(date, new Date(startDate))) return "day-before-start";
+    if (startDate && isBefore(d, toLocalDateOnly(startDate))) return "day-before-start";
 
-    // Aujourd'hui
-    if (isToday(date)) return "day-today";
+    const event = events.find((e) => isSameDay(e.start, d));
+    const isCompleted = !!event?.completed;
 
-    // Jours à venir après aujourd'hui → gris clair
-    if (isAfter(date, today)) return "day-future";
+    if (isSameDay(d, today)) {
+      return isCompleted ? "day-success" : "day-today";
+    }
 
-    // Vérifier si ce jour est complété
-    const event = events.find(
-      (e) => e.start.toDateString() === date.toDateString()
-    );
-    if (event && event.completed) return "day-success";
-
-    // Jour passé non complété → rouge
-    return "day-failed";
+    if (isAfter(d, today)) return "day-future";
+    return isCompleted ? "day-success" : "day-failed";
   };
 
-  const eventStyleGetter = (event: any) => ({
-    className: event.completed ? "day-success" : "day-failed",
-  });
+  const canSelectDate = (date: Date) => {
+    const d = toLocalDateOnly(date);
+    const today = toLocalDateOnly(new Date());
+    if (startDate && isBefore(d, toLocalDateOnly(startDate))) return false;
+    if (isAfter(d, today)) return false;
+    return true;
+  };
+
+  const handleSelectSlot = (slotInfo: any) => {
+    const selected = toLocalDateOnly(slotInfo.start);
+    if (!canSelectDate(selected)) return;
+    onSelectDate(selected);
+  };
+
+  const handleNavigate = (newDate: Date) => {
+    setCurrentDate(newDate);
+  };
 
   return (
     <div className="calendar-wrapper">
@@ -89,10 +123,17 @@ export default function ProgressCalendar({
         startAccessor="start"
         endAccessor="end"
         views={["month"]}
+        defaultView="month"
+        date={currentDate}              // calendrier contrôlé
+        onNavigate={handleNavigate}     // navigation explicite
         selectable
-        onSelectSlot={(slotInfo: any) => onSelectDate(slotInfo.start)}
+        onSelectSlot={handleSelectSlot}
         dayPropGetter={(date) => ({ className: dayClassGetter(date) })}
-        eventPropGetter={eventStyleGetter}
+        eventPropGetter={(event: any) => ({
+          className: event.completed ? "day-success" : "day-failed",
+        })}
+        components={{ event: () => null }}
+        popup={false}
         style={{ height: 520 }}
       />
     </div>
