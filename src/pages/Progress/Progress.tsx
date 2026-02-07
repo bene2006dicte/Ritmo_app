@@ -14,6 +14,7 @@ export default function ProgressPage() {
   });
   const [progressData, setProgressData] = useState<ProgressData[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Charger les objectifs
   useEffect(() => {
@@ -28,17 +29,22 @@ export default function ProgressPage() {
 
   // Fonction pour charger l'historique d'un objectif et mettre à jour le récap
   const loadProgress = async (objectiveId: number) => {
-    const data = await ProgressService.getObjectiveProgress(objectiveId);
-    setProgressData(data);
+    setIsLoading(true);
+    try {
+      const data = await ProgressService.getObjectiveProgress(objectiveId);
+      setProgressData(data);
 
-    const totalDays = selectedObjective
-      ? selectedObjective.duration_unit === "days"
-        ? selectedObjective.duration_value
-        : selectedObjective.duration_value * 30
-      : 0;
+      const totalDays = selectedObjective
+        ? selectedObjective.duration_unit === "days"
+          ? selectedObjective.duration_value
+          : selectedObjective.duration_value * 30
+        : 0;
 
-    const completed = data.filter((p) => p.completed).length;
-    setProgressSummary({ completed, total: totalDays });
+      const completed = data.filter((p) => p.completed).length;
+      setProgressSummary({ completed, total: totalDays });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Ajouter une progression pour la date sélectionnée
@@ -53,6 +59,21 @@ export default function ProgressPage() {
     } catch (error: any) {
       setErrorMessage(error.message);
     }
+  };
+
+  // Calculer la date de fin pour l'affichage
+  const getEndDate = (obj: Objective | null) => {
+    if (!obj || !obj.start_date) return undefined;
+    const start = new Date(obj.start_date);
+    const end = new Date(start);
+
+    if (obj.duration_unit === 'months') {
+      end.setMonth(end.getMonth() + obj.duration_value);
+      end.setDate(end.getDate() - 1);
+    } else {
+      end.setDate(end.getDate() + obj.duration_value - 1);
+    }
+    return end.toISOString().split('T')[0]; // Format YYYY-MM-DD
   };
 
   return (
@@ -82,6 +103,8 @@ export default function ProgressPage() {
             progressData={progressData}
             onSelectDate={(date) => setSelectedDate(date)}
             startDate={selectedObjective?.start_date}
+            endDate={getEndDate(selectedObjective || null)}
+            isLoading={isLoading}
           />
         </div>
 
@@ -89,9 +112,9 @@ export default function ProgressPage() {
           <div className="add-progress">
             <h3>Ajouter un progrès</h3>
             <input
-              type="text"
+              type="text" 
               value={selectedDate ? selectedDate.toLocaleDateString() : ""}
-              readOnly
+              readOnly 
             />
             <div className="buttons">
               <button className="btn-validate" onClick={handleAddProgress}>
@@ -116,11 +139,10 @@ export default function ProgressPage() {
                   <div
                     className="progress-bar-fill"
                     style={{
-                      width: `${
-                        progressSummary.total === 0
-                          ? 0
-                          : (progressSummary.completed / progressSummary.total) * 100
-                      }%`,
+                      width: `${progressSummary.total === 0
+                        ? 0
+                        : (progressSummary.completed / progressSummary.total) * 100
+                        }%`,
                     }}
                   ></div>
                 </div>

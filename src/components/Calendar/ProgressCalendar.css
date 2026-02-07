@@ -1,9 +1,11 @@
+/* ProgressCalendar.css */
 .calendar-wrapper {
   background: white;
   padding: 16px;
   border-radius: 12px;
   position: relative;
-  pointer-events: auto; /* s'assurer que les clics passent */
+  pointer-events: auto;
+  /* s'assurer que les clics passent */
 }
 
 /* Toolbar navigation */
@@ -75,6 +77,13 @@
   border-radius: 8px;
 }
 
+/* Jours après la fin de l'objectif */
+.day-after-end {
+  background-color: white !important;
+  color: #9ca3af;
+  border-radius: 8px;
+}
+
 /* Supprimer style événements par défaut */
 .rbc-event {
   background: transparent !important;
@@ -105,3 +114,10 @@
   border: 2px solid #3b82f6 !important;
   background-color: #ef4444 !important;
 }
+
+/* .rbc-date-cell {
+  cursor: pointer;
+}
+.rbc-date-cell:hover {
+  background-color: #e0f2fe !important;
+} */

@@ -19,8 +19,10 @@ export interface Objective {
 // Fonction utilitaire pour normaliser une date en YYYY-MM-DD
 const normalizeDate = (date: Date | string): string => {
   const d = typeof date === "string" ? new Date(date) : date;
-  d.setHours(0, 0, 0, 0);
-  return d.toISOString().split("T")[0]; // YYYY-MM-DD
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 };
 
 // Service API pour les progressions

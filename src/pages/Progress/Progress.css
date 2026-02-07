@@ -34,9 +34,10 @@
   display: block;
   margin-bottom: 10px;
   padding: 6px;
-  width: 100%;
+  width: 265px;
   border-radius: 5px;
   border: 1px solid #ccc;
+  
 }
 
 .add-progress .buttons {

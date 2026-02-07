@@ -6,8 +6,9 @@
   border-right: 1px solid #e2e8f0;
   padding: 30px 0;
 
-  /* Sticky sidebar */
-  position: sticky;
+  /* Fixed sidebar */
+  position: fixed;
+  left: 0;
   top: 0;
   height: 100vh;
 
@@ -25,7 +26,8 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 0 auto 15px; /* moins de marge à gauche/droite et en bas */
+  padding: 0 auto 15px;
+  /* moins de marge à gauche/droite et en bas */
 }
 
 .logo {
@@ -38,7 +40,8 @@
 .logo-img {
   width: 80px;
   height: 80px;
-  object-fit: cover;       /* garde le ratio du logo */
+  object-fit: cover;
+  /* garde le ratio du logo */
   /* border-radius: 8px;      arrondi subtil */
   /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); effet pro */
   display: block;

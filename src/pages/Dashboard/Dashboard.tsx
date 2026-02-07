@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import StatCard from '../../components/StatCard/StatCard';
-import {dashboardApi, type DashboardStats } from '../../api/Dashboard';
+import { dashboardApi, type DashboardStats } from '../../api/Dashboard';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -29,6 +29,19 @@ const Dashboard = () => {
     fetchStats();
   }, []);
 
+  if (loading) {
+    return (
+      <div className="dashboard-layout">
+        <main className="dashboard-content">
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <p>Chargement de vos statistiques...</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="dashboard-layout">
       <main className="dashboard-content">
@@ -39,33 +52,29 @@ const Dashboard = () => {
 
         {/* Section des Statistiques Dynamiques */}
         <section className="stats-grid">
-          <StatCard 
-            title="Série max" 
-            value={`${stats.maxStreak} jour(s)`} 
-            trend="Actuel" 
-            icon="🔥" 
-            variant="orange" 
+          <StatCard
+            title="Série max"
+            value={`${stats.maxStreak} jours`}
+            trend="Actuel"
+            variant="orange"
           />
-          <StatCard 
-            title="Taux de réussite" 
-            value={`${stats.successRate}%`} 
-            trend="Sur la durée" 
-            icon="🏆" 
-            variant="green" 
+          <StatCard
+            title="Taux de réussite"
+            value={`${stats.successRate}%`}
+            trend="Sur la durée"
+            variant="green"
           />
-          <StatCard 
-            title="Objectifs actifs" 
-            value={stats.activeObjectives.toString()} 
-            trend="En cours" 
-            icon="🎯" 
-            variant="purple" 
+          <StatCard
+            title="Objectifs actifs"
+            value={stats.activeObjectives.toString()}
+            trend="En cours"
+            variant="purple"
           />
-          <StatCard 
-            title="Total jours" 
-            value={stats.totalCompletedDays.toString()} 
-            trend="Cumulé" 
-            icon="📅" 
-            variant="blue" 
+          <StatCard
+            title="Total jours"
+            value={stats.totalCompletedDays.toString()}
+            trend="Cumulé"
+            variant="blue"
           />
         </section>
       </main>

@@ -11,6 +11,7 @@ import {
   isBefore,
   parseISO,
   isSameDay,
+
 } from "date-fns";
 import { fr } from "date-fns/locale/fr";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -22,7 +23,7 @@ const locales = { fr };
 const localizer = dateFnsLocalizer({
   format,
   parse,
-  startOfWeek: () => startOfWeek(new Date(), { weekStartsOn: 1 }),
+  startOfWeek,
   getDay,
   locales,
 });
@@ -38,6 +39,8 @@ interface Props {
   progressData: ProgressData[];
   onSelectDate: (date: Date) => void;
   startDate?: string; // date de début de l'objectif
+  endDate?: string;   // date de fin de l'objectif
+  isLoading?: boolean;
 }
 
 const toLocalDateOnly = (input: string | Date) => {
@@ -52,9 +55,11 @@ export default function ProgressCalendar({
   progressData,
   onSelectDate,
   startDate,
+  endDate,
+  isLoading,
 }: Props) {
   const [events, setEvents] = useState<any[]>([]);
-  const [currentDate, setCurrentDate] = useState<Date>(new Date()); // état contrôlé
+  const [currentDate, setCurrentDate] = useState<Date>(new Date());
 
   useEffect(() => {
     if (!objectiveId) return;
@@ -81,10 +86,13 @@ export default function ProgressCalendar({
   }, [progressData, objectiveId]);
 
   const dayClassGetter = (date: Date) => {
+    if (!objectiveId || isLoading) return ""; // État neutre pendant le chargement ou si aucun objectif choisi
+
     const d = toLocalDateOnly(date);
     const today = toLocalDateOnly(new Date());
 
     if (startDate && isBefore(d, toLocalDateOnly(startDate))) return "day-before-start";
+    if (endDate && isAfter(d, toLocalDateOnly(endDate))) return "day-after-end";
 
     const event = events.find((e) => isSameDay(e.start, d));
     const isCompleted = !!event?.completed;
@@ -101,13 +109,24 @@ export default function ProgressCalendar({
     const d = toLocalDateOnly(date);
     const today = toLocalDateOnly(new Date());
     if (startDate && isBefore(d, toLocalDateOnly(startDate))) return false;
+    if (endDate && isAfter(d, toLocalDateOnly(endDate))) return false;
     if (isAfter(d, today)) return false;
     return true;
   };
 
   const handleSelectSlot = (slotInfo: any) => {
-    const selected = toLocalDateOnly(slotInfo.start);
+    let selected = toLocalDateOnly(slotInfo.start);
+
+    const today = toLocalDateOnly(new Date());
+
+
+
+    console.log('Date brute:', slotInfo.start.toLocaleDateString('fr-FR'));
+    console.log('Date corrigée:', selected.toLocaleDateString('fr-FR'));
+    console.log('Today:', today.toLocaleDateString('fr-FR'));
+
     if (!canSelectDate(selected)) return;
+
     onSelectDate(selected);
   };
 
@@ -124,8 +143,8 @@ export default function ProgressCalendar({
         endAccessor="end"
         views={["month"]}
         defaultView="month"
-        date={currentDate}              // calendrier contrôlé
-        onNavigate={handleNavigate}     // navigation explicite
+        date={currentDate}
+        onNavigate={handleNavigate}
         selectable
         onSelectSlot={handleSelectSlot}
         dayPropGetter={(date) => ({ className: dayClassGetter(date) })}

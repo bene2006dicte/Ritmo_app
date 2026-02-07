@@ -7,11 +7,12 @@ export default function Register() {
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
-  const [email,setEmail] = useState("");
-  const [password,setPassword] = useState("");
-//   const [confirmPassword,setConfirmPassword] = useState("");
-  const [error,setError] = useState("");
-  const [loading,setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  //   const [confirmPassword,setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [acceptPrivacy, setAcceptPrivacy] = useState(false);
 
   const handleRegister = async (e: any) => {
     e.preventDefault();
@@ -26,7 +27,7 @@ export default function Register() {
     try {
       await axiosClient.post("/register", { name, email, password });
       navigate("/login"); // redirige vers login après succès
-    } catch(err:any){
+    } catch (err: any) {
       setError("Impossible de créer le compte.");
     } finally {
       setLoading(false);
@@ -72,7 +73,21 @@ export default function Register() {
           required
         /> */}
 
-        <button type="submit" disabled={loading}>
+        <div className="auth-checkbox-container" style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', margin: '16px 0', textAlign: 'left' }}>
+          <input
+            type="checkbox"
+            id="privacy"
+            checked={acceptPrivacy}
+            onChange={(e) => setAcceptPrivacy(e.target.checked)}
+            style={{ width: 'auto', marginTop: '4px' }}
+            required
+          />
+          <label htmlFor="privacy" style={{ color: '#64748b', fontSize: '0.9rem', lineHeight: '1.4' }}>
+            J'accepte la <a href="/privacy" style={{ color: '#6366f1', textDecoration: 'underline' }}>politique de confidentialité</a>
+          </label>
+        </div>
+
+        <button type="submit" disabled={loading || !acceptPrivacy}>
           {loading ? "Création..." : "S'inscrire"}
         </button>
 
